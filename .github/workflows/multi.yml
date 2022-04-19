@@ -35,4 +35,4 @@ jobs:
       - name: Login to GitHub Package Registry        
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Build & Push Docker image
-        run: docker buildx build -t ghcr.io/${{ github.repository_owner }}/myimage:${GITHUB_SHA} -f [path to Dockerfile] --push --platform=linux/arm64,linux/amd64 [path to build context]
+        run: docker buildx build -t ghcr.io/${{ github.repository_owner }}/myimage:${GITHUB_SHA} -f . --push --platform=linux/arm64,linux/amd64 [path to build context]
