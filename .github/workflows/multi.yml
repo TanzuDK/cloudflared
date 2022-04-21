@@ -8,14 +8,8 @@ on:
   push:
     branches:
       - 'main'
-      - 'dev'
       - 'v*.*.*'
     tags:
-      - 'v*.*.*'
-  pull_request:
-    branches:
-      - 'main'
-      - 'dev'
       - 'v*.*.*'
 
 permissions: 
@@ -24,7 +18,7 @@ permissions:
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build-dogecoin:
+  build-cloudflared:
     runs-on: ubuntu-latest
     steps:
       # Get the repositery's code
@@ -49,7 +43,7 @@ jobs:
 
       -
         name: Docker meta
-        id: meta_dogecoin
+        id: meta
         uses: docker/metadata-action@v3
         with:
           # list of Docker images to use as base name for tags
@@ -70,5 +64,5 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm/v7
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta_dogecoin.outputs.tags }}
-          labels: ${{ steps.meta_dogecoin.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
