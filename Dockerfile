@@ -1,8 +1,6 @@
-FROM ubuntu:20.04 AS stage
-RUN apt-get update && \
-    apt-get install -y wget && \
-    apt-get upgrade -y 
-    #wget https://github.com/cloudflare/cloudflared/releases/download/2022.4.1/cloudflared-linux-arm64.deb && \
-    #dpkg -i cloudflared-linux-arm64.deb
+FROM ubuntu:latest AS stage
+RUN apt-get update && apt-get install -y wget
+RUN wget https://github.com/cloudflare/cloudflared/releases/download/2022.4.1/cloudflared-linux-$(dpkg --print-architecture).deb
+RUN dpkg -i cloudflared-linux-$(dpkg --print-architecture).deb
 FROM stage
 CMD ["cloudflared","tunnel","run"]
