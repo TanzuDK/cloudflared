@@ -1,4 +1,6 @@
-name: Build
+# This is a basic workflow to help you get started with Actions
+
+name: Docker Builds
 
 # Controls when the workflow will run
 on:
@@ -6,23 +8,29 @@ on:
   push:
     branches:
       - 'main'
+      - 'dev'
+      - 'v*.*.*'
     tags:
       - 'v*.*.*'
   pull_request:
     branches:
       - 'main'
+      - 'dev'
+      - 'v*.*.*'
 
-# permissions are needed if pushing to ghcr.io
 permissions: 
+  contents: read
   packages: write
-
+  
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
+  build-dogecoin:
     runs-on: ubuntu-latest
     steps:
-      # Get the repository's code
+      # Get the repositery's code
       - name: Checkout
         uses: actions/checkout@v2
+      
       # https://github.com/docker/setup-qemu-action
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -39,14 +47,15 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Docker meta
-        id: 1234 # you'll use this in the next step
+      -
+        name: Docker meta
+        id: meta_dogecoin
         uses: docker/metadata-action@v3
         with:
           # list of Docker images to use as base name for tags
           images: |
             ghcr.io/tanzudk/cloudflared
-          # Docker tags based on the following events/attributes
+          # generate Docker tags based on the following events/attributes
           tags: |
             type=schedule
             type=ref,event=branch
@@ -55,12 +64,11 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=sha
-
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
           platforms: linux/amd64,linux/arm/v7
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.1234.outputs.tags }}
-          labels: ${{ steps.1234.outputs.labels }}
+          tags: ${{ steps.meta_dogecoin.outputs.tags }}
+          labels: ${{ steps.meta_dogecoin.outputs.labels }}
