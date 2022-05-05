@@ -1,1 +1,1 @@
-FROM cloudflare/cloudflared
+FROM cloudflare/cloudflared:latest
