@@ -6,11 +6,12 @@ name: Docker Builds
 on:
   workflow_dispatch:
   push:
-    branches:
-      - 'main'
-      - 'v*.*.*'
+#    branches:
+#      - 'main'
+#      - 'v*.*.*'
     tags:
       - 'v*.*.*'
+      - 'latest'
 
 permissions: 
   contents: read
